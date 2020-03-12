@@ -1,18 +1,18 @@
 const request = require('request');
-const breedType = process.argv[2];
 
-request(`https://mnhuhntypoapi.thecatapi.com/v1/breeds/search?q=${breedType}`, (error, response, body) => {
-  if (error) {
-    throw error;
-  }
-  const data = JSON.parse(body);
-
-  const searchReq = (data) => {
-    if (data.length === 0) {
-      console.log("ALF: Sorry guys, no more cats -  it's time to eat pizza");
+const fetchBreedDescription = function(breedName, callback) {
+  request(`https://api.thecatapi.com/v1/breeds/search?q=${breedName}`, (error, responce, body) => {
+    if (error) {
+      return callback(error, body);
     } else {
-      console.log(data[0].description);
+      const data = JSON.parse(body);
+      if (data.length === 0) {
+        return callback(error, "no cats(((");
+      } else {
+        return callback(error, data[0].description);
+      }
     }
-  };
-  searchReq(data);
-});
+  });
+};
+
+module.exports = { fetchBreedDescription };
